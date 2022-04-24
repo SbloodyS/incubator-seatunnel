@@ -56,7 +56,7 @@ class Doris extends SparkBatchSink with Serializable {
       })
       builder.substring(0, builder.length - 1)
     })
-    dataFrame.foreachPartition { partition =>
+    dataFrame.rdd.foreachPartition { partition =>
       var count: Int = 0
       val buffer = new ListBuffer[String]
       val dorisUtil = new DorisUtil(propertiesMap.toMap, apiUrl, user, password)

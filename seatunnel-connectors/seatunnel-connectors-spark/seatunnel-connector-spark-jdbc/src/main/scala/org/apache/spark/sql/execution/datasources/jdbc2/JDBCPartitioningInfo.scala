@@ -20,12 +20,12 @@ import org.apache.spark.Partition
 import org.apache.spark.internal.Logging
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.catalyst.analysis._
-import org.apache.spark.sql.catalyst.util.DateTimeUtils
+import org.apache.spark.sql.catalyst.util.{DateFormatter, DateTimeUtils, TimestampFormatter}
+import org.apache.spark.sql.internal.SQLConf
 import org.apache.spark.sql.jdbc.JdbcDialects
 import org.apache.spark.sql.sources._
-import org.apache.spark.sql.types.{DataType, DateType, NumericType, StructType, TimestampType}
-import org.apache.spark.sql.{AnalysisException, DataFrame, Row, SQLContext, SaveMode, SparkSession}
-import org.apache.spark.util.Utils
+import org.apache.spark.sql.types._
+import org.apache.spark.sql._
 
 import java.sql.{Date, Timestamp}
 import scala.collection.mutable.ArrayBuffer
@@ -169,7 +169,7 @@ private[sql] object JDBCRelation extends Logging {
       resolver(f.name, columnName) || resolver(dialect.quoteIdentifier(f.name), columnName)
     }.getOrElse {
       throw new AnalysisException(s"User-defined partition column $columnName not " +
-        s"found in the JDBC relation: ${schema.simpleString(Utils.maxNumToStringFields)}")
+        s"found in the JDBC relation: ${schema.simpleString(SQLConf.get.maxToStringFields)}")
     }
     column.dataType match {
       case _: NumericType | DateType | TimestampType =>
@@ -195,8 +195,8 @@ private[sql] object JDBCRelation extends Logging {
     def dateTimeToString(): String = {
       val timeZone = DateTimeUtils.getTimeZone(timeZoneId)
       val dateTimeStr = columnType match {
-        case DateType => DateTimeUtils.dateToString(value.toInt, timeZone)
-        case TimestampType => DateTimeUtils.timestampToString(value, timeZone)
+        case DateType => DateFormatter.apply().format(DateTimeUtils.toJavaDate(value.toInt))
+        case TimestampType => TimestampFormatter.apply(DateTimeUtils.getZoneId(timeZoneId)).format(DateTimeUtils.toJavaTimestamp(value))
       }
       s"'$dateTimeStr'"
     }
