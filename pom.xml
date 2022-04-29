@@ -180,6 +180,12 @@
                 <artifactId>spark-hive_${scala.binary.version}</artifactId>
                 <version>${spark.version}</version>
                 <scope>${spark.scope}</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-hdfs</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>net.jpountz.lz4</groupId>
@@ -276,6 +282,10 @@
                         <groupId>org.glassfish.web</groupId>
                         <artifactId>javax.servlet.jsp</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-hdfs</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -353,6 +363,10 @@
                     <exclusion>
                         <groupId>org.glassfish.web</groupId>
                         <artifactId>javax.servlet.jsp</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-hdfs</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
