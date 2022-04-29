@@ -484,6 +484,12 @@
                 <groupId>com.pingcap.tispark</groupId>
                 <artifactId>tispark-assembly</artifactId>
                 <version>${tispark.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.hadoop</groupId>
+                        <artifactId>hadoop-hdfs</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.druid</groupId>
